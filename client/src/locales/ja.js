@@ -147,6 +147,7 @@ export default {
     noItems: 'この予算に収まる品目はありません。予算を増やすと提案が表示されます。',
     placeOrder: '発注する',
     placing: '発注中...',
+    orderPlacedShort: '発注済み',
     orderPlaced: '注文 {number}（{total}）を発注しました。お届け予定日：{date}',
     viewInOrders: '注文一覧で見る',
     orderFailed: '発注できませんでした',

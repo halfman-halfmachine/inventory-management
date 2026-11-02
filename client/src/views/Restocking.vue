@@ -78,10 +78,10 @@
           <h3 class="card-title">{{ t('restocking.recommendations') }} ({{ recommendation.items.length }})</h3>
           <button
             class="place-order-btn"
-            :disabled="submitting || refreshing || recommendation.items.length === 0"
+            :disabled="submitting || refreshing || placedOrder !== null || recommendation.items.length === 0"
             @click="placeOrder"
           >
-            {{ submitting ? t('restocking.placing') : t('restocking.placeOrder') }}
+            {{ buttonLabel }}
           </button>
         </div>
 
@@ -148,6 +148,14 @@ export default {
     // Round the slider's top end up to a whole step so the full amount is reachable
     const sliderMax = computed(() => Math.ceil(maxBudget.value / BUDGET_STEP) * BUDGET_STEP)
 
+    // Placing an order locks the button until the budget changes, so a second
+    // click can't submit the same recommendations twice
+    const buttonLabel = computed(() => {
+      if (submitting.value) return t('restocking.placing')
+      if (placedOrder.value) return t('restocking.orderPlacedShort')
+      return t('restocking.placeOrder')
+    })
+
     const formatMoney = (amount, decimals = 0) => {
       return formatCurrencyWithDecimals(amount || 0, currentCurrency.value, decimals)
     }
@@ -207,6 +215,7 @@ export default {
     })
 
     const placeOrder = async () => {
+      if (submitting.value || placedOrder.value) return
       try {
         submitting.value = true
         submitError.value = null
@@ -231,6 +240,7 @@ export default {
       submitting,
       submitError,
       placedOrder,
+      buttonLabel,
       budget,
       sliderMax,
       recommendation,

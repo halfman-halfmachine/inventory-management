@@ -147,6 +147,7 @@ export default {
     noItems: 'No items fit this budget. Increase the budget to see recommendations.',
     placeOrder: 'Place Order',
     placing: 'Placing order...',
+    orderPlacedShort: 'Order Placed',
     orderPlaced: 'Order {number} placed for {total}. Expected delivery {date}.',
     viewInOrders: 'View in Orders',
     orderFailed: 'Could not place the order',
