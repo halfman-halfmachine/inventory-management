@@ -29,6 +29,20 @@
             {{ t('nav.reports') }}
           </router-link>
         </nav>
+        <button
+          class="theme-toggle"
+          :aria-label="isDark ? t('theme.switchToLight') : t('theme.switchToDark')"
+          :title="isDark ? t('theme.switchToLight') : t('theme.switchToDark')"
+          @click="toggleTheme"
+        >
+          <!-- Sun icon in dark mode, moon icon in light mode -->
+          <svg v-if="isDark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+          <svg v-else viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+        </button>
         <LanguageSwitcher />
         <ProfileMenu
           @show-profile-details="showProfileDetails = true"
@@ -62,6 +76,7 @@ import { ref, onMounted, computed } from 'vue'
 import { api } from './api'
 import { useAuth } from './composables/useAuth'
 import { useI18n } from './composables/useI18n'
+import { useTheme } from './composables/useTheme'
 import FilterBar from './components/FilterBar.vue'
 import ProfileMenu from './components/ProfileMenu.vue'
 import ProfileDetailsModal from './components/ProfileDetailsModal.vue'
@@ -80,6 +95,7 @@ export default {
   setup() {
     const { currentUser } = useAuth()
     const { t } = useI18n()
+    const { isDark, toggleTheme } = useTheme()
     const showProfileDetails = ref(false)
     const showTasks = ref(false)
     const apiTasks = ref([])
@@ -153,6 +169,8 @@ export default {
 
     return {
       t,
+      isDark,
+      toggleTheme,
       showProfileDetails,
       showTasks,
       tasks,
@@ -485,5 +503,233 @@ tbody tr:hover {
   border-radius: 8px;
   margin: 1rem 0;
   font-size: 0.938rem;
+}
+
+/* Theme toggle button in the top nav */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/*
+ * Dark theme
+ *
+ * Light mode is untouched: everything below only applies when useTheme sets
+ * data-theme="dark" on <html>. Each selector starts with html[...] so it
+ * outranks component-scoped rules like `.card[data-v-123]` (one extra element
+ * in the selector), which lets this one block restyle views and components
+ * without editing their files.
+ */
+html[data-theme='dark'] {
+  --dm-bg: #0b1120;
+  --dm-surface: #111827;
+  --dm-surface-2: #1e293b;
+  --dm-border: #334155;
+  --dm-text: #e2e8f0;
+  --dm-text-strong: #f8fafc;
+  --dm-text-muted: #94a3b8;
+  --dm-accent: #60a5fa;
+  color-scheme: dark;
+}
+
+html[data-theme='dark'] body {
+  background: var(--dm-bg);
+  color: var(--dm-text);
+}
+
+/* Shell: nav, filter bar, page header */
+html[data-theme='dark'] .top-nav,
+html[data-theme='dark'] .filters-bar {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
+html[data-theme='dark'] .logo h1,
+html[data-theme='dark'] .page-header h2,
+html[data-theme='dark'] .card-title,
+html[data-theme='dark'] .stat-value {
+  color: var(--dm-text-strong);
+}
+
+html[data-theme='dark'] .subtitle {
+  border-color: var(--dm-border);
+}
+
+html[data-theme='dark'] .subtitle,
+html[data-theme='dark'] .page-header p,
+html[data-theme='dark'] .stat-label,
+html[data-theme='dark'] .filter-group label,
+html[data-theme='dark'] .loading {
+  color: var(--dm-text-muted);
+}
+
+html[data-theme='dark'] .nav-tabs a {
+  color: var(--dm-text-muted);
+}
+
+html[data-theme='dark'] .nav-tabs a:hover {
+  color: var(--dm-text-strong);
+  background: var(--dm-surface-2);
+}
+
+html[data-theme='dark'] .nav-tabs a.active {
+  color: var(--dm-accent);
+  background: rgba(96, 165, 250, 0.12);
+}
+
+/* Surfaces: cards, panels, dropdowns, modals */
+html[data-theme='dark'] .card,
+html[data-theme='dark'] .stat-card,
+html[data-theme='dark'] .kpi-card,
+html[data-theme='dark'] .trend-card,
+html[data-theme='dark'] .modal-container,
+html[data-theme='dark'] .dropdown-menu,
+html[data-theme='dark'] .items-dropdown,
+html[data-theme='dark'] .task-form {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+html[data-theme='dark'] .card-header,
+html[data-theme='dark'] .dropdown-header {
+  border-color: var(--dm-border);
+}
+
+/* Controls: buttons, inputs, selects */
+html[data-theme='dark'] .theme-toggle,
+html[data-theme='dark'] .language-button,
+html[data-theme='dark'] .profile-button,
+html[data-theme='dark'] .reset-filters-btn,
+html[data-theme='dark'] .filter-select,
+html[data-theme='dark'] .search-input,
+html[data-theme='dark'] .task-select,
+html[data-theme='dark'] .budget-input-wrap,
+html[data-theme='dark'] .btn-secondary {
+  background: var(--dm-surface-2);
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+html[data-theme='dark'] .theme-toggle:hover,
+html[data-theme='dark'] .language-button:hover,
+html[data-theme='dark'] .profile-button:hover,
+html[data-theme='dark'] .reset-filters-btn:hover:not(:disabled),
+html[data-theme='dark'] .dropdown-item:hover,
+html[data-theme='dark'] .close-button:hover {
+  background: var(--dm-border);
+  color: var(--dm-text-strong);
+}
+
+html[data-theme='dark'] .budget-input,
+html[data-theme='dark'] .budget-label {
+  color: var(--dm-text-strong);
+}
+
+/* Tables */
+html[data-theme='dark'] thead,
+html[data-theme='dark'] .transactions-table thead {
+  background: var(--dm-surface-2);
+  border-color: var(--dm-border);
+}
+
+html[data-theme='dark'] th {
+  color: var(--dm-text-muted);
+}
+
+html[data-theme='dark'] td {
+  color: var(--dm-text);
+  border-color: var(--dm-surface-2);
+}
+
+html[data-theme='dark'] tbody tr:hover,
+html[data-theme='dark'] .transactions-table tbody tr:hover,
+html[data-theme='dark'] .task-item,
+html[data-theme='dark'] .trend-item {
+  background: var(--dm-surface-2);
+}
+
+html[data-theme='dark'] .task-item:hover,
+html[data-theme='dark'] .trend-item:hover {
+  background: var(--dm-border);
+}
+
+/* Chart tracks */
+html[data-theme='dark'] .h-bar-container,
+html[data-theme='dark'] .kpi-progress-bar,
+html[data-theme='dark'] .category-bar-container {
+  background: var(--dm-surface-2);
+}
+
+/* Common text inside views that is hard-coded to dark slate */
+html[data-theme='dark'] .main-content :is(h1, h2, h3, h4, strong, label),
+html[data-theme='dark'] .item-name,
+html[data-theme='dark'] .dropdown-item {
+  color: var(--dm-text-strong);
+}
+
+/* Secondary text that views hard-code to slate gray */
+html[data-theme='dark'] :is(.kpi-label, .kpi-goal, .h-bar-label, .health-metric-label, .legend-item-compact,
+  .legend-item, .trend-label, .item-meta, .item-sku, .bar-label, .slider-scale, .budget-prefix, .budget-hint,
+  .stat-meta, .percentage, .transaction-id, .transaction-date, .item-change.neutral),
+html[data-theme='dark'] .transactions-table th {
+  color: var(--dm-text-muted);
+}
+
+/* Primary values and names that views hard-code to near-black */
+html[data-theme='dark'] :is(.kpi-value, .health-metric-value, .profile-name, .trend-count, .category-name,
+  .category-amount, .transaction-description, .transaction-vendor, .transaction-amount) {
+  color: var(--dm-text-strong);
+}
+
+/* SVG chart text uses fill, not color */
+html[data-theme='dark'] .donut-center-value {
+  fill: var(--dm-text-strong);
+}
+
+html[data-theme='dark'] .donut-center-label {
+  fill: var(--dm-text-muted);
+}
+
+/* Status colors: the light-mode shades are too dark to read on a dark surface */
+html[data-theme='dark'] .stat-card.success .stat-value,
+html[data-theme='dark'] :is(.positive-change, .stat-change.positive, .change.positive),
+html[data-theme='dark'] .increasing-card :is(.item-change, .trend-icon) {
+  color: #4ade80;
+}
+
+html[data-theme='dark'] .stat-card.danger .stat-value,
+html[data-theme='dark'] :is(.negative-change, .stat-change.negative, .change.negative),
+html[data-theme='dark'] .decreasing-card :is(.item-change, .trend-icon) {
+  color: #f87171;
+}
+
+html[data-theme='dark'] .stat-card.warning .stat-value {
+  color: #fb923c;
+}
+
+html[data-theme='dark'] .stat-card.info .stat-value,
+html[data-theme='dark'] .stable-card :is(.item-change, .trend-icon) {
+  color: var(--dm-accent);
 }
 </style>
