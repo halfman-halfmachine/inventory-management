@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -106,6 +107,10 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: 'Submitted Restocking Orders',
+    leadTime: 'Lead Time',
+    days: '{count} days',
+    submitted: 'Submitted',
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -126,6 +131,34 @@ export default {
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Set a budget and get restocking recommendations from the demand forecast',
+    budget: 'Budget',
+    budgetHint: 'Items with rising demand are filled first, then the largest demand gap. Items that don\'t fit are skipped.',
+    plannedSpend: 'Planned Spend',
+    remaining: 'Remaining',
+    itemsSelected: 'Items Selected',
+    recommendations: 'Recommended Items',
+    noItems: 'No items fit this budget. Increase the budget to see recommendations.',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    orderPlacedShort: 'Order Placed',
+    orderPlaced: 'Order {number} placed for {total}. Expected delivery {date}.',
+    viewInOrders: 'View in Orders',
+    orderFailed: 'Could not place the order',
+    table: {
+      item: 'Item',
+      trend: 'Trend',
+      demandGap: 'Demand Gap',
+      quantity: 'Quantity',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time'
     }
   },
 
